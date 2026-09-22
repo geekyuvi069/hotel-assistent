@@ -25,6 +25,15 @@ test("shows a typing indicator while waiting, then the answer", async () => {
   expect(screen.queryByRole("status", { name: /typing/i })).not.toBeInTheDocument();
 });
 
+test("does not crash when scrollIntoView returns a promise (newer browsers)", async () => {
+  Element.prototype.scrollIntoView = () => Promise.resolve();
+  fetch.mockReturnValue(json(chatReply()));
+  render(<App />);
+  await userEvent.click(screen.getByRole("button", { name: /Our Rooms/i }));
+  expect(await screen.findByText("Check-in is from 3:00 PM.")).toBeInTheDocument();
+  delete Element.prototype.scrollIntoView;
+});
+
 test("follow-up question sends the whole conversation", async () => {
   fetch.mockReturnValueOnce(json(chatReply())).mockReturnValueOnce(json(chatReply({ reply: "Breakfast is 7-10:30." })));
   render(<App />);

@@ -71,7 +71,7 @@ function AvailabilityForm({ onSubmit, onCancel }) {
   const [adults, setAdults] = useState(2);
   const [error, setError] = useState("");
   const first = useRef(null);
-  useEffect(() => first.current?.focus(), []);
+  useEffect(() => { first.current?.focus(); }, []);
 
   function submit(e) {
     e.preventDefault();
@@ -108,7 +108,7 @@ export default function App() {
   const [formOpen, setFormOpen] = useState(false);
   const [text, setText] = useState("");
   const end = useRef(null);
-  useEffect(() => end.current?.scrollIntoView?.({ behavior: "smooth" }), [messages, loading, error, formOpen]);
+  useEffect(() => { end.current?.scrollIntoView?.({ behavior: "smooth" }); }, [messages, loading, error, formOpen]);
 
   // Every request goes through run(): one place for loading, errors and retry.
   async function run(msgs, fetcher) {
