@@ -48,7 +48,7 @@ def availability(req: AvailabilityRequest):
 async def chat(req: ChatRequest, request: Request):
     rid = request.state.id
     try:
-        out, degraded = await llm.ask(req.messages), False
+        out, degraded = fallback.booking(req.messages[-1].content) or await llm.ask(req.messages), False
     except Exception as e:  # LLM down, timeout, no key: keyword fallback keeps the guest unblocked
         log.warning("[%s] LLM failed (%s: %s), using fallback", rid, type(e).__name__, e)
         out, degraded = fallback.answer(req.messages[-1].content), True

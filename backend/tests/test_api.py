@@ -56,6 +56,19 @@ def test_llm_down_availability_still_prompts_form(llm_down):
     assert chat("Any rooms available?").json()["type"] == "needs_availability_input"
 
 
+def test_booking_request_says_cannot_book(monkeypatch):
+    async def asks_for_dates(messages):  # what the model did in prod for "Book standard room"
+        return {"type": "needs_availability_input", "reply": llm.NEED_INPUT, "sources": []}
+    monkeypatch.setattr(llm, "ask", asks_for_dates)
+    body = chat("Book standard room").json()
+    assert body["type"] == "answer" and body["sources"] == ["contact"]
+    assert "can't make bookings" in body["reply"] and "front desk" in body["reply"].lower()
+
+
+def test_llm_down_booking_request_says_cannot_book(llm_down):
+    assert "can't make bookings" in chat("Can I reserve the deluxe room?").json()["reply"]
+
+
 def test_llm_down_unsupported_question_gets_fallback(llm_down):
     body = chat("Do you have a helipad?").json()
     assert body["type"] == "fallback" and "front desk" in body["reply"]

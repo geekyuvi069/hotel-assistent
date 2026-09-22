@@ -13,8 +13,17 @@ KEYWORDS = {
     "airport": ["airport", "shuttle"],
     "contact": ["contact", "phone", "email"],
 }
-AVAILABILITY = ["available", "availability", "vacan", "book", "rooms free"]
+AVAILABILITY = ["available", "availability", "vacan", "rooms free"]
+BOOKING = ["book", "reserv"]
 FACTS = {f["id"]: f["text"] for f in KB["facts"]}
+
+
+def booking(text: str) -> dict | None:
+    """We can't book, so say so deterministically instead of letting the model loop the guest through the date form."""
+    if any(k in text.lower() for k in BOOKING):
+        return {"type": "answer", "sources": ["contact"],
+                "reply": f"I can't make bookings in this chat. To reserve a room, please contact our front desk: "
+                         f"{FACTS['contact']} I can still check which rooms are available for your dates."}
 
 
 def answer(text: str) -> dict:
