@@ -13,7 +13,7 @@ def ids(res):
 def test_three_guests_excludes_standard():
     res = check_availability(date(2026, 10, 1), date(2026, 10, 3), 3)
     assert ids(res) == ["deluxe", "family"]
-    assert res["rooms"][0]["total"] == 360  # 2 nights x 180
+    assert res["rooms"][0]["total"] == 29998  # 2 nights x ₹14,999
 
 
 def test_sold_out_dates_excluded():

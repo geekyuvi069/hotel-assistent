@@ -47,7 +47,7 @@ test("availability intent opens the form; submitting shows room cards", async ()
   fireEvent.change(screen.getByLabelText("Guests"), { target: { value: "3" } });
   await userEvent.click(screen.getByRole("button", { name: "Search rooms" }));
   expect(await screen.findByText("Deluxe Room")).toBeInTheDocument();
-  expect(screen.getByText("$360 total")).toBeInTheDocument();
+  expect(screen.getByText("₹360 total")).toBeInTheDocument();
   expect(bodyOf(fetch.mock.calls[1])).toEqual({ check_in: "2030-10-01", check_out: "2030-10-03", adults: 3 });
   expect(form).not.toBeInTheDocument();
 });

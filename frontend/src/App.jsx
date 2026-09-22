@@ -43,8 +43,8 @@ function Rooms({ a }) {
           <li key={r.id}>
             <h3>{r.name}</h3>
             <p>Sleeps {r.capacity}</p>
-            <p className="price">${r.price_per_night}<span> / night</span></p>
-            <p className="total">${r.total} total</p>
+            <p className="price">₹{r.price_per_night.toLocaleString("en-IN")}<span> / night</span></p>
+            <p className="total">₹{r.total.toLocaleString("en-IN")} total</p>
           </li>
         ))}
       </ul>

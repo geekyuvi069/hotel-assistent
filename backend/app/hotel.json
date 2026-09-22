@@ -3,18 +3,18 @@
   "facts": [
     {"id": "checkin", "text": "Check-in is from 3:00 PM. Check-out is by 11:00 AM. Early check-in and late check-out are subject to availability."},
     {"id": "pool", "text": "There is an outdoor swimming pool open daily 7:00 AM to 9:00 PM, free for guests. Towels are provided."},
-    {"id": "breakfast", "text": "Breakfast is included in Deluxe and Family Suite rates. For Standard rooms it is optional at 15 USD per person. Served 7:00 AM to 10:30 AM."},
+    {"id": "breakfast", "text": "Breakfast is included in Deluxe and Family Suite rates. For Standard rooms it is optional at ₹1,200 per person. Served 7:00 AM to 10:30 AM."},
     {"id": "cancellation", "text": "Free cancellation up to 48 hours before check-in. Within 48 hours, the first night is charged. No-shows are charged the full stay."},
     {"id": "wifi", "text": "Free high-speed WiFi is available throughout the property."},
-    {"id": "parking", "text": "On-site parking costs 10 USD per night. EV charging is not available."},
+    {"id": "parking", "text": "On-site parking costs ₹800 per night. EV charging is not available."},
     {"id": "pets", "text": "Pets are not allowed, except registered service animals."},
     {"id": "gym", "text": "The fitness centre is open 24 hours for guests."},
-    {"id": "airport", "text": "The airport is 25 minutes away. A paid shuttle can be booked at the front desk for 30 USD."},
+    {"id": "airport", "text": "The airport is 25 minutes away. A paid shuttle can be booked at the front desk for ₹2,500."},
     {"id": "contact", "text": "Front desk: +1 555 0100, frontdesk@lakeviewgrand.example. Open 24 hours."}
   ],
   "rooms": [
-    {"id": "standard", "name": "Standard Room", "capacity": 2, "price": 120, "description": "1 queen bed, city view, 25 sqm."},
-    {"id": "deluxe", "name": "Deluxe Room", "capacity": 3, "price": 180, "description": "1 king bed plus sofa bed, lake view, 35 sqm, breakfast included."},
-    {"id": "family", "name": "Family Suite", "capacity": 5, "price": 290, "description": "2 bedrooms, living area, lake view, 60 sqm, breakfast included."}
+    {"id": "standard", "name": "Standard Room", "capacity": 2, "price": 9999, "description": "1 queen bed, city view, 25 sqm."},
+    {"id": "deluxe", "name": "Deluxe Room", "capacity": 3, "price": 14999, "description": "1 king bed plus sofa bed, lake view, 35 sqm, breakfast included."},
+    {"id": "family", "name": "Family Suite", "capacity": 5, "price": 23999, "description": "2 bedrooms, living area, lake view, 60 sqm, breakfast included."}
   ]
 }

@@ -9,7 +9,7 @@ VALID_IDS = {f["id"] for f in KB["facts"]} | set(ROOMS)
 def system_prompt() -> str:
     facts = "\n".join(f"[{f['id']}] {f['text']}" for f in KB["facts"])
     rooms = "\n".join(
-        f"[{r['id']}] {r['name']}: sleeps {r['capacity']}, {r['price']} USD/night. {r['description']}"
+        f"[{r['id']}] {r['name']}: sleeps {r['capacity']}, ₹{r['price']}/night. {r['description']}"
         for r in KB["rooms"]
     )
     return (
