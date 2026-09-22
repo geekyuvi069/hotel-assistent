@@ -1,11 +1,21 @@
 import { useEffect, useRef, useState } from "react";
 import { ThinkingOrb } from "thinking-orbs";
+import logo from "./assets/logo-small.png";
 
-const CHIPS = ["What time is check-in?", "Is breakfast included?", "Do you have a pool?", "What's the cancellation policy?"];
-const WELCOME = { id: 0, role: "assistant", text: "Welcome to Lakeview Grand. Ask me anything about the hotel, or check room availability." };
+const QUICK_ACTIONS = [
+  { icon: "📅", title: "Check Availability", subtitle: "Find and book your stay", openForm: true },
+  { icon: "🛏️", title: "Our Rooms", subtitle: "Explore room types", question: "What room types do you have?" },
+  { icon: "☕", title: "Amenities", subtitle: "Discover what we offer", question: "What amenities do you offer?" },
+  { icon: "📄", title: "Hotel Policies", subtitle: "Rules and guidelines", question: "What are your hotel policies?" },
+];
+const WELCOME = {
+  id: 0, role: "assistant", ts: Date.now(),
+  text: "Welcome to Lakeview Grand! 👋 Ask me anything about the hotel, or check room availability. I'm here to help you with rooms, amenities, policies, and more.",
+};
 
 const today = () => new Date().toLocaleDateString("en-CA"); // local YYYY-MM-DD
 const fmt = (iso) => new Date(iso + "T00:00").toLocaleDateString(undefined, { month: "short", day: "numeric" });
+const fmtTime = (ts) => new Date(ts).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
 const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
 async function post(path, body) {
@@ -45,9 +55,13 @@ function Rooms({ a }) {
 function Message({ m }) {
   return (
     <div className={`row ${m.role}`}>
-      <div className="bubble"><Text>{m.text}</Text></div>
-      {m.degraded && <small className="note">Limited mode: the AI assistant is unavailable, so this answer comes from basic FAQ matching.</small>}
-      {m.availability?.rooms.length > 0 && <Rooms a={m.availability} />}
+      {m.role === "assistant" && <img className="avatar" src={logo} alt="" aria-hidden="true" />}
+      <div className="col">
+        <div className="bubble"><Text>{m.text}</Text></div>
+        {m.degraded && <small className="note">Limited mode: the AI assistant is unavailable, so this answer comes from basic FAQ matching.</small>}
+        {m.availability?.rooms.length > 0 && <Rooms a={m.availability} />}
+        <span className="time">{fmtTime(m.ts)}{m.role === "user" && <span className="ticks" aria-hidden="true">✓✓</span>}</span>
+      </div>
     </div>
   );
 }
@@ -104,7 +118,7 @@ export default function App() {
     setLoading(true);
     try {
       const m = await fetcher();
-      setMessages([...msgs, { id: Date.now(), role: "assistant", ...m }]);
+      setMessages([...msgs, { id: Date.now(), role: "assistant", ts: Date.now(), ...m }]);
       if (m.type === "needs_availability_input") setFormOpen(true);
     } catch (e) {
       setError({ msg: e.message, retry: () => run(msgs, fetcher) });
@@ -115,7 +129,7 @@ export default function App() {
 
   function ask(question) {
     if (loading || !question.trim()) return;
-    const msgs = [...messages, { id: Date.now(), role: "user", text: question.trim() }];
+    const msgs = [...messages, { id: Date.now(), role: "user", ts: Date.now(), text: question.trim() }];
     setText("");
     setFormOpen(false);
     run(msgs, async () => {
@@ -127,7 +141,7 @@ export default function App() {
 
   function check({ checkIn, checkOut, adults }) {
     const summary = `Availability: ${fmt(checkIn)} to ${fmt(checkOut)}, ${plural(adults, "guest")}`;
-    const msgs = [...messages, { id: Date.now(), role: "user", text: summary }];
+    const msgs = [...messages, { id: Date.now(), role: "user", ts: Date.now(), text: summary }];
     setFormOpen(false);
     run(msgs, async () => {
       const a = await post("/api/availability", { check_in: checkIn, check_out: checkOut, adults });
@@ -140,40 +154,83 @@ export default function App() {
     });
   }
 
+  function runQuickAction(qa) {
+    if (qa.openForm) setFormOpen(true);
+    else ask(qa.question);
+  }
+
   return (
-    <div className="app">
-      <header>
-        <h1>Lakeview Grand</h1>
-        <p>Guest assistant</p>
-      </header>
-
-      <main role="log" aria-label="Conversation" aria-live="polite">
-        {messages.map((m) => <Message key={m.id} m={m} />)}
-        {messages.length === 1 && (
-          <div className="chips">
-            {CHIPS.map((c) => <button key={c} type="button" onClick={() => ask(c)}>{c}</button>)}
+    <div className="page">
+      <aside className="hero hero-left" aria-hidden="true">
+        <div className="hero-brand">
+          <img src={logo} alt="" />
+          <div>
+            <strong>Lakeview Grand</strong>
+            <span>HOTEL &amp; RESORT</span>
           </div>
-        )}
-        {loading && <div className="row assistant"><div className="bubble typing" role="status" aria-label="Assistant is typing"><ThinkingOrb state="searching" size={20} theme="light" /></div></div>}
-        {error && (
-          <div className="row assistant">
-            <div className="bubble error" role="alert">{error.msg} <button type="button" onClick={error.retry}>Try again</button></div>
-          </div>
-        )}
-        {formOpen && <AvailabilityForm onSubmit={check} onCancel={() => setFormOpen(false)} />}
-        <div ref={end} />
-      </main>
-
-      <form className="composer" onSubmit={(e) => { e.preventDefault(); ask(text); }}>
-        <button type="button" className="pill" aria-expanded={formOpen} onClick={() => setFormOpen((o) => !o)}>
-          Check availability
-        </button>
-        <div className="line">
-          <label htmlFor="q" className="sr">Your question</label>
-          <input id="q" value={text} onChange={(e) => setText(e.target.value)} placeholder="Ask about rooms, policies, amenities…" maxLength={2000} autoComplete="off" />
-          <button type="submit" disabled={loading || !text.trim()}>Send</button>
         </div>
-      </form>
+        <div className="hero-copy">
+          <h2>A Memorable<br />Stay Awaits</h2>
+          <hr />
+          <p>LUXURY · NATURE · YOU</p>
+        </div>
+      </aside>
+
+      <div className="app">
+        <header>
+          <img src={logo} alt="" className="header-logo" />
+          <div>
+            <h1>Lakeview Grand</h1>
+            <p>Guest assistant</p>
+          </div>
+        </header>
+
+        <main role="log" aria-label="Conversation" aria-live="polite">
+          <p className="day-divider">Today</p>
+          {messages.map((m) => <Message key={m.id} m={m} />)}
+          {messages.length === 1 && (
+            <div className="quick-actions">
+              {QUICK_ACTIONS.map((qa) => (
+                <button key={qa.title} type="button" className="qa-card" onClick={() => runQuickAction(qa)}>
+                  <span className="qa-icon" aria-hidden="true">{qa.icon}</span>
+                  <span>
+                    <strong>{qa.title}</strong>
+                    <small>{qa.subtitle}</small>
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
+          {loading && <div className="row assistant"><div className="bubble typing" role="status" aria-label="Assistant is typing"><ThinkingOrb state="searching" size={20} theme="light" /></div></div>}
+          {error && (
+            <div className="row assistant">
+              <div className="bubble error" role="alert">{error.msg} <button type="button" onClick={error.retry}>Try again</button></div>
+            </div>
+          )}
+          {formOpen && <AvailabilityForm onSubmit={check} onCancel={() => setFormOpen(false)} />}
+          <div ref={end} />
+        </main>
+
+        <form className="composer" onSubmit={(e) => { e.preventDefault(); ask(text); }}>
+          <button type="button" className="pill" aria-expanded={formOpen} onClick={() => setFormOpen((o) => !o)}>
+            Check availability
+          </button>
+          <div className="line">
+            <span className="clip" aria-hidden="true">📎</span>
+            <label htmlFor="q" className="sr">Your question</label>
+            <input id="q" value={text} onChange={(e) => setText(e.target.value)} placeholder="Ask about rooms, policies, amenities…" maxLength={2000} autoComplete="off" />
+            <button type="submit" className="send" disabled={loading || !text.trim()} aria-label="Send">➤</button>
+          </div>
+        </form>
+      </div>
+
+      <aside className="hero hero-right" aria-hidden="true">
+        <p className="hero-quote">Where Comfort<br />Meets Nature</p>
+        <div className="hero-caption">
+          <strong>LAKEVIEW GRAND</strong>
+          <span>HOTEL &amp; RESORT</span>
+        </div>
+      </aside>
     </div>
   );
 }

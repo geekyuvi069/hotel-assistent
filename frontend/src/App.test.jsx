@@ -18,7 +18,7 @@ test("shows a typing indicator while waiting, then the answer", async () => {
   let resolve;
   fetch.mockReturnValue(new Promise((r) => { resolve = r; }));
   render(<App />);
-  await userEvent.click(screen.getByRole("button", { name: "What time is check-in?" }));
+  await userEvent.click(screen.getByRole("button", { name: /Our Rooms/i }));
   expect(screen.getByRole("status", { name: /typing/i })).toBeInTheDocument();
   resolve(await json(chatReply()));
   expect(await screen.findByText("Check-in is from 3:00 PM.")).toBeInTheDocument();
@@ -64,7 +64,7 @@ test("reversed dates never reach the API", async () => {
 test("server error shows an alert and Try again recovers", async () => {
   fetch.mockReturnValueOnce(json({}, 500)).mockReturnValueOnce(json(chatReply()));
   render(<App />);
-  await userEvent.click(screen.getByRole("button", { name: "What time is check-in?" }));
+  await userEvent.click(screen.getByRole("button", { name: /Our Rooms/i }));
   expect(await screen.findByRole("alert")).toHaveTextContent(/something went wrong/i);
   await userEvent.click(screen.getByRole("button", { name: "Try again" }));
   expect(await screen.findByText("Check-in is from 3:00 PM.")).toBeInTheDocument();
@@ -74,13 +74,13 @@ test("server error shows an alert and Try again recovers", async () => {
 test("network failure shows a connection message", async () => {
   fetch.mockRejectedValue(new TypeError("Failed to fetch"));
   render(<App />);
-  await userEvent.click(screen.getByRole("button", { name: "Do you have a pool?" }));
+  await userEvent.click(screen.getByRole("button", { name: /Amenities/i }));
   expect(await screen.findByRole("alert")).toHaveTextContent(/can't reach the server/i);
 });
 
 test("degraded answers are labelled as limited mode", async () => {
   fetch.mockReturnValue(json(chatReply({ degraded: true })));
   render(<App />);
-  await userEvent.click(screen.getByRole("button", { name: "What time is check-in?" }));
+  await userEvent.click(screen.getByRole("button", { name: /Our Rooms/i }));
   expect(await screen.findByText(/limited mode/i)).toBeInTheDocument();
 });
