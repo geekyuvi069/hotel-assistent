@@ -1,5 +1,5 @@
 {
   "rewrites": [
-    { "source": "/api/:path*", "destination": "https://REPLACE-WITH-YOUR-RENDER-URL.onrender.com/api/:path*" }
+    { "source": "/api/:path*", "destination": "https://hotel-assistant-backend.onrender.com/api/:path*" }
   ]
 }
