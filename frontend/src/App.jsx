@@ -182,6 +182,8 @@ export default function App() {
             <h1>Lakeview Grand</h1>
             <p>Guest assistant</p>
           </div>
+          {/* Chat state lives only in memory, so a reload is a clean new chat and drops any in-flight reply. */}
+          <button type="button" className="new-chat" onClick={() => window.location.reload()}>+ New chat</button>
         </header>
 
         <main role="log" aria-label="Conversation" aria-live="polite">
