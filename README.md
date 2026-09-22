@@ -80,12 +80,20 @@ curl -X POST localhost:8010/api/availability -H 'Content-Type: application/json'
 - *Model/API down or slow:* 20s timeout, 1 retry, then keyword fallback (`degraded: true`). If even that has no match, the guest gets the front-desk contact.
 - *Frontend call fails:* alert with retry; history is preserved. Invalid dates never reach the API.
 
+**Why not RAG?** The whole KB goes into the system prompt on every request, with no retrieval step. It is 10 facts and 3 room types (~1,900 characters, ~500 tokens), and at this size sending everything beats RAG:
+- *No retrieval misses.* RAG's most common failure is fetching the wrong chunks, so the answer exists but the model never sees it. With the full KB in context, every fact is always available.
+- *Less infrastructure.* No embedding model, vector store, chunking strategy or ranking to build, host, tune or debug.
+- *Low cost and latency.* ~500 extra input tokens per request is negligible.
+- *Grounding is still enforced.* The model must cite the fact IDs it used (`SOURCES: pool,checkin`), and the backend rejects any answer that cites a fact ID that doesn't exist, returning a safe fallback instead.
+
+Switch to RAG when the KB grows to hundreds or thousands of facts or long documents (policies, menus, local guides), when one assistant serves many properties, or when content is edited often by non-developers. The migration cost is low: only `system_prompt()` in `backend/app/kb.py` changes, adding the top-k facts retrieved for the guest's question instead of all facts. Fact IDs, source validation, the keyword fallback, the API contract and the frontend stay the same.
+
 **Measuring usefulness.** Resolution rate (conversation ends without a front-desk contact), fallback rate and the questions behind it (to find KB gaps), availability-to-booking click-through, thumbs up/down per answer, latency p95, degraded-mode rate.
 
 **Before production**
 - Real booking-system integration for availability; the mock has the same signature.
 - Auth/rate limiting and per-IP quotas; restrict CORS to the real origin.
-- Retrieval instead of stuffing the KB in the prompt once it grows; multilingual support.
+- Retrieval (RAG) once the KB outgrows the prompt (see "Why not RAG?"); multilingual support.
 - Output check that blocks unsupported claims (e.g. "confirmed", "guaranteed"), not just a prompt rule.
 - Streaming responses, conversation persistence, human handoff, PII redaction in logs, an offline eval set run in CI, and a real e2e test (Playwright) against a running stack.
 
