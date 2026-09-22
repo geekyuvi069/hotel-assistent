@@ -10,7 +10,7 @@
     {"id": "pets", "text": "Pets are not allowed, except registered service animals."},
     {"id": "gym", "text": "The fitness centre is open 24 hours for guests."},
     {"id": "airport", "text": "The airport is 25 minutes away. A paid shuttle can be booked at the front desk for ₹2,500."},
-    {"id": "contact", "text": "Front desk: +1 555 0100, frontdesk@lakeviewgrand.example. Open 24 hours."}
+    {"id": "contact", "text": "Front desk: +91 98765 43210, geekyuvi069@gmail.com. Open 24 hours."}
   ],
   "rooms": [
     {"id": "standard", "name": "Standard Room", "capacity": 2, "price": 9999, "description": "1 queen bed, city view, 25 sqm."},

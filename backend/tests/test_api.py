@@ -62,11 +62,11 @@ def test_booking_request_says_cannot_book(monkeypatch):
     monkeypatch.setattr(llm, "ask", asks_for_dates)
     body = chat("Book standard room").json()
     assert body["type"] == "answer" and body["sources"] == ["contact"]
-    assert "can't make bookings" in body["reply"] and "front desk" in body["reply"].lower()
+    assert "Bookings are handled by our front desk team" in body["reply"] and "front desk" in body["reply"].lower()
 
 
 def test_llm_down_booking_request_says_cannot_book(llm_down):
-    assert "can't make bookings" in chat("Can I reserve the deluxe room?").json()["reply"]
+    assert "front desk team" in chat("Can I reserve the deluxe room?").json()["reply"]
 
 
 def test_llm_down_unsupported_question_gets_fallback(llm_down):

@@ -37,7 +37,7 @@ TOOL = {
     },
 }
 NEED_INPUT = "Sure, I can check that. Please give me your check-in date, check-out date and number of guests."
-NO_ANSWER = "I'm not able to answer that reliably. Please contact our front desk at +1 555 0100."
+NO_ANSWER = "I'm not able to answer that reliably. Please contact our front desk at +91 98765 43210."
 
 
 class LLMUnavailable(Exception):

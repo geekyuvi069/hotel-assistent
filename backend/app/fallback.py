@@ -22,8 +22,9 @@ def booking(text: str) -> dict | None:
     """We can't book, so say so deterministically instead of letting the model loop the guest through the date form."""
     if any(k in text.lower() for k in BOOKING):
         return {"type": "answer", "sources": ["contact"],
-                "reply": f"I can't make bookings in this chat. To reserve a room, please contact our front desk: "
-                         f"{FACTS['contact']} I can still check which rooms are available for your dates."}
+                "reply": "Bookings are handled by our front desk team for now — call +91 98765 43210 or email "
+                         "geekyuvi069@gmail.com, open 24 hours, and they'll get you set up. I can check availability "
+                         "right now if you tell me your check-in, check-out, and number of guests."}
 
 
 def answer(text: str) -> dict:
