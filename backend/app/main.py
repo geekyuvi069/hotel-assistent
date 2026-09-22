@@ -1,4 +1,5 @@
 import logging
+import os
 import time
 import uuid
 
@@ -14,7 +15,9 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name
 log = logging.getLogger("api")
 
 app = FastAPI(title="Hotel Guest Assistant")
-app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5173"], allow_methods=["*"], allow_headers=["*"])
+# ALLOWED_ORIGINS: comma-separated list, e.g. "https://your-app.vercel.app,http://localhost:5173"
+origins = os.environ.get("ALLOWED_ORIGINS", "http://localhost:5173").split(",")
+app.add_middleware(CORSMiddleware, allow_origins=origins, allow_methods=["*"], allow_headers=["*"])
 
 
 @app.middleware("http")

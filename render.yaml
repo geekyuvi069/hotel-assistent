@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: hotel-assistant-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    plan: free
+    envVars:
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: MODEL
+        value: anthropic/claude-haiku-4.5
+      - key: ALLOWED_ORIGINS
+        sync: false
