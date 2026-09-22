@@ -19,6 +19,7 @@ class ErrorBoundary extends Component {
           <h1>Something went wrong</h1>
           <p>Please reload the page. If this keeps happening, contact the front desk.</p>
           <button onClick={() => location.reload()}>Reload</button>
+          <pre style={{ marginTop: 16, fontSize: 12, color: "#777", whiteSpace: "pre-wrap" }}>{String(this.state.error?.stack || this.state.error)}</pre>
         </div>
       );
     }
