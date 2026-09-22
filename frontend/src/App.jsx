@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { ThinkingOrb } from "thinking-orbs";
 import logo from "./assets/logo-small.png";
 
 const QUICK_ACTIONS = [
@@ -201,7 +200,7 @@ export default function App() {
               ))}
             </div>
           )}
-          {loading && <div className="row assistant"><div className="bubble typing" role="status" aria-label="Assistant is typing"><ThinkingOrb state="searching" size={20} theme="light" /></div></div>}
+          {loading && <div className="row assistant"><div className="bubble typing" role="status" aria-label="Assistant is typing"><span /><span /><span /></div></div>}
           {error && (
             <div className="row assistant">
               <div className="bubble error" role="alert">{error.msg} <button type="button" onClick={error.retry}>Try again</button></div>
